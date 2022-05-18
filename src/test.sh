@@ -1,2 +1,2 @@
-﻿$ bash file
+﻿#!/bin/bash
 dotnet test
