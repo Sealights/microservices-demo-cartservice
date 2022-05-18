@@ -1,2 +1,2 @@
 ﻿#!/bin/bash
-dotnet test
+sudo dotnet test ./../tests
