@@ -1,1 +1,2 @@
-﻿dotnet build
+﻿$ bash file
+dotnet build

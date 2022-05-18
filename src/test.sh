@@ -1,1 +1,2 @@
-﻿dotnet test
+﻿$ bash file
+dotnet test
