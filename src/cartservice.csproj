@@ -5,6 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="rebuild" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="rebuild" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Grpc.AspNetCore" Version="2.44.0" />
     <PackageReference Include="Grpc.HealthCheck" Version="2.45.0" />
     <PackageReference Include="StackExchange.Redis" Version="2.5.43" />
