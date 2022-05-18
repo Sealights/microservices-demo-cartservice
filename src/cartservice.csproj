@@ -5,11 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="rebuild" />
+    <None Remove="rebuild.sh" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="rebuild" />
+    <Compile Include="rebuild.sh" />
   </ItemGroup>
 
   <ItemGroup>
