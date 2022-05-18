@@ -1,2 +1,2 @@
 ﻿#!/bin/bash
-sudo dotnet test ./../tests
+sudo dotnet test ./../tests --output= ./cartservice
