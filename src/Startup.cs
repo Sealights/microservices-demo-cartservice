@@ -25,15 +25,20 @@ namespace cartservice
         public void ConfigureServices(IServiceCollection services)
         {
             string redisAddress = Configuration["REDIS_ADDR"];
-            RedisCartStore cartStore = null;
-            if (string.IsNullOrEmpty(redisAddress))
+            ICartStore cartStore = null;
+
+            if (!string.IsNullOrEmpty(redisAddress))
             {
                 Console.WriteLine("Redis cache host(hostname+port) was not specified.");
                 Console.WriteLine("This sample was modified to showcase OpenTelemetry RedisInstrumentation.");
                 Console.WriteLine("REDIS_ADDR environment variable is required.");
-                System.Environment.Exit(1);
+                
+                cartStore = new RedisCartStore(redisAddress);
             }
-            cartStore = new RedisCartStore(redisAddress);
+            else {
+                cartStore = new LocalCartStore();
+            }
+            
 
             // Initialize the redis store
             cartStore.InitializeAsync().GetAwaiter().GetResult();
@@ -42,15 +47,12 @@ namespace cartservice
             services.AddSingleton<ICartStore>(cartStore);
 
             services.AddOpenTelemetryTracing((builder) => builder
-                .AddRedisInstrumentation(
-                    cartStore.GetConnection(),
-                    options => options.SetVerboseDatabaseStatements = true)
                 .AddAspNetCoreInstrumentation()
                 .AddGrpcClientInstrumentation()
                 .AddHttpClientInstrumentation()
                 .AddOtlpExporter());
 
-            services.AddGrpc();
+           services.AddGrpc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
