@@ -24,7 +24,7 @@ spec:
               protocol: TCP
           env:
             - name: POSTGRES_FOR_OTEL_CONNECTION_STRING
-              value: "postgres://postgres:UUtryc100@temporal-postgre.dev.sealights.co:5432/traces"
+              value: "a246e90b79fd34b2e9105d5df8c526b9-1105414556.eu-west-1.elb.amazonaws.com:4317"
 ---
 apiVersion: v1
 kind: Service
