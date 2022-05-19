@@ -1,0 +1,13 @@
+﻿apiVersion: v1
+kind: Service
+metadata:
+  name: b-cartservice
+spec:
+  ports:
+    - name: b-cartservice
+      port: 7070
+      targetPort: 7070
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: b-cartservice
+  type: LoadBalancer
