@@ -10,4 +10,4 @@ spec:
       protocol: TCP
   selector:
     app.kubernetes.io/name: b-cartservice
-  type: LoadBalancer
+  type: ClusterIP
