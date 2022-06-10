@@ -27,7 +27,7 @@ COPY /src .
 RUN dotnet publish cartservice.csproj -p:PublishSingleFile=true -r linux-musl-x64 --self-contained true -p:PublishTrimmed=True -p:TrimMode=Link -c release -o /cartservice --no-restore
 
 WORKDIR /app/sealights
-COPY sealights-dotnet-agent-3.0.1-beta.hotfix-portable.tar.gz .
+ADD https://sl-repo-dev.s3.us-east-1.amazonaws.com/sealights-dotnet-agent-3.0.1-beta.hotfix-portable.tar.gz
 RUN tar -xvzf sealights-dotnet-agent-3.0.1-beta.hotfix-portable.tar.gz
 RUN rm sealights-dotnet-agent-3.0.1-beta.hotfix-portable.tar.gz
 
