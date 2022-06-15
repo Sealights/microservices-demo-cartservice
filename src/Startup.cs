@@ -8,6 +8,8 @@ using Microsoft.Extensions.Hosting;
 using cartservice.cartstore;
 using cartservice.services;
 using OpenTelemetry.Trace;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 
 namespace cartservice
 {
@@ -32,13 +34,14 @@ namespace cartservice
                 Console.WriteLine("Redis cache host(hostname+port) was not specified.");
                 Console.WriteLine("This sample was modified to showcase OpenTelemetry RedisInstrumentation.");
                 Console.WriteLine("REDIS_ADDR environment variable is required.");
-                
+
                 cartStore = new RedisCartStore(redisAddress);
             }
-            else {
+            else
+            {
                 cartStore = new LocalCartStore();
             }
-            
+
 
             // Initialize the redis store
             cartStore.InitializeAsync().GetAwaiter().GetResult();
@@ -50,9 +53,13 @@ namespace cartservice
                 .AddAspNetCoreInstrumentation()
                 .AddGrpcClientInstrumentation()
                 .AddHttpClientInstrumentation()
-                .AddOtlpExporter());
+                .AddOtlpExporter(o =>
+                {
+                    o.Endpoint = !string.IsNullOrEmpty(Configuration["OTEL_EXPORTER_OTLP_TRACES_ENDPOINT"]) ? new Uri(Configuration["OTEL_EXPORTER_OTLP_TRACES_ENDPOINT"]) : DecodeAndExtractServerUrl(Configuration["RM_DEV_SL_TOKEN"], Configuration["OTEL_AGENT_COLLECTOR_PORT"]);
+                    o.Headers = AddHeaders(Configuration["RM_DEV_SL_TOKEN"], Configuration["OTEL_AGENT_COLLECTOR_PROTOCOL"]);
+                }));
 
-           services.AddGrpc();
+            services.AddGrpc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -75,6 +82,45 @@ namespace cartservice
                     await context.Response.WriteAsync("Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
                 });
             });
+        }
+
+        private static Uri DecodeAndExtractServerUrl(string token, string port)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                throw new Exception("token is empty");
+            }
+
+            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token);
+            JwtSecurityToken tokenS = jsonToken as JwtSecurityToken;
+
+            string apiLabAddress = tokenS.Claims.First(claim => claim.Type == "x-sl-server").Value;
+
+            if (string.IsNullOrEmpty(apiLabAddress))
+            {
+                throw new Exception("x-sl-server url value is empty");
+            }
+
+            string host = apiLabAddress.Replace("https://", "");
+            host = host.Replace("/api", "");
+
+            return new Uri($"ingest.{host}:{port}");
+        }
+
+        private static string AddHeaders(string token, string protocol)
+        {
+            if (string.IsNullOrEmpty(token))
+            {
+                throw new Exception("token is empty");
+            }
+
+            if (string.IsNullOrEmpty(protocol))
+            {
+                throw new Exception("protocol is empty");
+            }
+
+            return $"Authorization=Bearer {token}, x-otlp-protocol={protocol}";
         }
     }
 }
