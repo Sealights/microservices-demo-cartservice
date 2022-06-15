@@ -38,9 +38,9 @@ RUN rm sealights-dotnet-agent-3.0.1-beta.hotfix-portable.tar.gz
 
 RUN dotnet SL.DotNet.dll config --token $RM_DEV_SL_TOKEN --appName cartservice --includedAssemblies "cartservice*" --branchName main --buildName $(date +%F_%T) --includeNamespace "cartservice.*" --excludeNamespace Microsoft
 RUN dotnet SL.DotNet.dll scan --buildSessionIdFile buildSessionId --binDir /app/tests/bin/Debug/net6.0 --token $RM_DEV_SL_TOKEN --ignoreGeneratedCode true
-RUN dotnet SL.DotNet.dll startExecution --buildSessionIdFile buildSessionId --labid=integ_master_813e_SLBoutique --token $RM_DEV_SL_TOKEN --testStage "Unit test"
+RUN dotnet SL.DotNet.dll startExecution --buildSessionIdFile buildSessionId --labid=integ_master_813e_SLBoutique --token $RM_DEV_SL_TOKEN --testStage "Unit Tests"
 RUN dotnet SL.DotNet.dll testListener --buildSessionIdFile buildSessionId --labid=integ_master_813e_SLBoutique --token $RM_DEV_SL_TOKEN --workingDir /app/tests/bin/Debug/net6.0 --target dotnet --targetArgs " test cartservice.tests.dll " || true
-RUN dotnet SL.DotNet.dll endExecution --buildSessionIdFile buildSessionId --labid=integ_master_813e_SLBoutique --token $RM_DEV_SL_TOKEN  --testStage "Unit test"
+RUN dotnet SL.DotNet.dll endExecution --buildSessionIdFile buildSessionId --labid=integ_master_813e_SLBoutique --token $RM_DEV_SL_TOKEN  --testStage "Unit Tests"
 
 # https://mcr.microsoft.com/v2/dotnet/runtime-deps/tags/list
 FROM mcr.microsoft.com/dotnet/runtime-deps:6.0.3-alpine3.15-amd64
