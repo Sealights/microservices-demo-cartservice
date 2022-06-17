@@ -55,14 +55,14 @@ RUN mv -v /cartservice/sealights-dotnet-agent-3.0.1-beta.hotfix-portable/* /cart
 RUN rm sealights-dotnet-agent-3.0.1-beta.hotfix-portable.tar.gz
 
 
-RUN if [[ $IS_PR -eq 0 ]]; then \
-    echo "Check-in to repo"; \
+RUN if $IS_PR = 0 \
+    (echo "Check-in to repo"; \
     dotnet SL.DotNet.dll config --token $RM_DEV_SL_TOKEN --appName cartservice --includedAssemblies "cartservice*" --branchName main \ 
-    	--buildName $(date +%F_%T) --includeNamespace "cartservice.*" --excludeNamespace Microsoft ; \
-else \ 
+    	--buildName $(date +%F_%T) --includeNamespace "cartservice.*" --excludeNamespace Microsoft ) \
+else (
     echo "Pull request"; \
     dotnet SL.DotNet.dll prConfig --token $RM_DEV_SL_TOKEN --appname cartservice --includedAssemblies "cartservice*" --targetBranch "${TARGET_BRANCH}" \
-    	--includeNamespace "cartservice.*" --excludeNamespace Microsoft --latestCommit "${LATEST_COMMIT}" --pullRequestNumber "${PR_NUMBER}" --repositoryUrl "${TARGET_REPO_URL}"; \
+    	--includeNamespace "cartservice.*" --excludeNamespace Microsoft --latestCommit "${LATEST_COMMIT}" --pullRequestNumber "${PR_NUMBER}" --repositoryUrl "${TARGET_REPO_URL}" ) \
 fi
 
 RUN dotnet SL.DotNet.dll scan --buildSessionIdFile buildSessionId --binDir /app/tests/bin/Debug/net6.0 --token $RM_DEV_SL_TOKEN --ignoreGeneratedCode true
