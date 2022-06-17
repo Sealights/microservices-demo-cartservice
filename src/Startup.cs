@@ -39,7 +39,6 @@ namespace cartservice
                 cartStore = new LocalCartStore();
             }
             
-
             // Initialize the redis store
             cartStore.InitializeAsync().GetAwaiter().GetResult();
             Console.WriteLine("Initialization completed");
@@ -50,7 +49,15 @@ namespace cartservice
                 .AddAspNetCoreInstrumentation()
                 .AddGrpcClientInstrumentation()
                 .AddHttpClientInstrumentation()
-                .AddOtlpExporter());
+                .AddOtlpExporter(opt =>
+                {
+                    string protocol = Environment.GetEnvironmentVariable("OTEL_AGENT_COLLECTOR_PROTOCOL"); 
+                    string authToken = Environment.GetEnvironmentVariable("OTEL_AGENT_AUTH_TOKEN"); 
+                    string endpointWithPort = $"{Environment.GetEnvironmentVariable("OTEL_AGENT_COLLECTOR_PATH")}";
+
+                    opt.Endpoint = new Uri(endpointWithPort);
+                    opt.Headers = $"x-otlp-protocol={protocol},Authorization=Bearer {authToken}";                   
+                }));
 
            services.AddGrpc();
         }
