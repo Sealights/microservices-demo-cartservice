@@ -57,7 +57,7 @@ RUN rm sealights-dotnet-agent-3.0.1-beta.hotfix-portable.tar.gz
 
 RUN if [ $IS_PR = 0 ]; then \
     echo "Check-in to repo"; \
-    dotnet SL.DotNet.dll config --token $RM_DEV_SL_TOKEN --appName cartservice --includedAssemblies "cartservice*" --branchName main \ 
+    dotnet SL.DotNet.dll config --token $RM_DEV_SL_TOKEN --appName cartservice --includedAssemblies "cartservice*" --branchName master \ 
     	--buildName $(date +%F_%T) --includeNamespace "cartservice.*" --excludeNamespace Microsoft ; \
 else \ 
     echo "Pull request"; \
