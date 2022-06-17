@@ -13,10 +13,28 @@
 # limitations under the License.
 
 # https://mcr.microsoft.com/v2/dotnet/sdk/tags/list
-FROM mcr.microsoft.com/dotnet/sdk:6.0.201 as builder
+FROM mcr.microsoft.com/dotnet/sdk:6.0.201-alpine3.14 as builder
 
 ARG RM_DEV_SL_TOKEN=local
+ARG IS_PR=""
+ARG TARGET_BRANCH=""
+ARG LATEST_COMMIT=""
+ARG PR_NUMBER=""
+ARG TARGET_REPO_URL=""
+
 ENV RM_DEV_SL_TOKEN ${RM_DEV_SL_TOKEN}
+ENV IS_PR ${IS_PR}
+ENV TARGET_BRANCH ${TARGET_BRANCH}
+ENV LATEST_COMMIT ${LATEST_COMMIT}
+ENV PR_NUMBER ${PR_NUMBER}
+ENV TARGET_REPO_URL ${TARGET_REPO_URL}
+
+RUN echo "========================================================="
+RUN echo "targetBranch: ${TARGET_BRANCH}"
+RUN echo "latestCommit: ${LATEST_COMMIT}"
+RUN echo "pullRequestNumber ${PR_NUMBER}"
+RUN echo "repositoryUrl ${TARGET_REPO_URL}"
+RUN echo "========================================================="
 
 WORKDIR /app/src
 COPY src/cartservice.csproj .
@@ -36,7 +54,17 @@ RUN tar -xvzf sealights-dotnet-agent-3.0.1-beta.hotfix-portable.tar.gz
 RUN mv -v /cartservice/sealights-dotnet-agent-3.0.1-beta.hotfix-portable/* /cartservice/
 RUN rm sealights-dotnet-agent-3.0.1-beta.hotfix-portable.tar.gz
 
-RUN dotnet SL.DotNet.dll config --token $RM_DEV_SL_TOKEN --appName cartservice --includedAssemblies "cartservice*" --branchName main --buildName $(date +%F_%T) --includeNamespace "cartservice.*" --excludeNamespace Microsoft
+
+RUN if [[ $IS_PR -eq 0 ]]; then \
+    (echo "Check-in to repo"; \
+    dotnet SL.DotNet.dll config --token $RM_DEV_SL_TOKEN --appName cartservice --includedAssemblies "cartservice*" --branchName main \ 
+    	--buildName $(date +%F_%T) --includeNamespace "cartservice.*" --excludeNamespace Microsoft ; \
+else \ 
+    echo "Pull request"; \
+    dotnet SL.DotNet.dll prConfig --token $RM_DEV_SL_TOKEN --appname cartservice --includedAssemblies "cartservice*" --targetBranch "${TARGET_BRANCH}" \
+    	--includeNamespace "cartservice.*" --excludeNamespace Microsoft --latestCommit "${LATEST_COMMIT}" --pullRequestNumber "${PR_NUMBER}" --repositoryUrl "${TARGET_REPO_URL}" ; \
+fi
+
 RUN dotnet SL.DotNet.dll scan --buildSessionIdFile buildSessionId --binDir /app/tests/bin/Debug/net6.0 --token $RM_DEV_SL_TOKEN --ignoreGeneratedCode true
 RUN dotnet SL.DotNet.dll startExecution --buildSessionIdFile buildSessionId --token $RM_DEV_SL_TOKEN --testStage "Unit test"
 RUN dotnet SL.DotNet.dll testListener --buildSessionIdFile buildSessionId --token $RM_DEV_SL_TOKEN --workingDir /app/tests/bin/Debug/net6.0 --target dotnet --targetArgs " test cartservice.tests.dll " || true
