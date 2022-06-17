@@ -55,7 +55,7 @@ RUN mv -v /cartservice/sealights-dotnet-agent-3.0.1-beta.hotfix-portable/* /cart
 RUN rm sealights-dotnet-agent-3.0.1-beta.hotfix-portable.tar.gz
 
 
-RUN if [[ $IS_PR -eq 0 ]]; then \
+RUN if [ $IS_PR = 0 ]; then \
     echo "Check-in to repo"; \
     dotnet SL.DotNet.dll config --token $RM_DEV_SL_TOKEN --appName cartservice --includedAssemblies "cartservice*" --branchName main \ 
     	--buildName $(date +%F_%T) --includeNamespace "cartservice.*" --excludeNamespace Microsoft ; \
