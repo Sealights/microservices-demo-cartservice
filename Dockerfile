@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # https://mcr.microsoft.com/v2/dotnet/sdk/tags/list
-FROM mcr.microsoft.com/dotnet/sdk:6.0.201 as builder
+FROM mcr.microsoft.com/dotnet/sdk:6.0.201-alpine3.14 as builder
 
 ARG RM_DEV_SL_TOKEN=local
 ARG IS_PR=""
@@ -63,7 +63,6 @@ else (
     echo "Pull request"; \
     dotnet SL.DotNet.dll prConfig --token $RM_DEV_SL_TOKEN --appname cartservice --includedAssemblies "cartservice*" --targetBranch "${TARGET_BRANCH}" \
     	--includeNamespace "cartservice.*" --excludeNamespace Microsoft --latestCommit "${LATEST_COMMIT}" --pullRequestNumber "${PR_NUMBER}" --repositoryUrl "${TARGET_REPO_URL}" ) \
-fi
 
 RUN dotnet SL.DotNet.dll scan --buildSessionIdFile buildSessionId --binDir /app/tests/bin/Debug/net6.0 --token $RM_DEV_SL_TOKEN --ignoreGeneratedCode true
 RUN dotnet SL.DotNet.dll startExecution --buildSessionIdFile buildSessionId --token $RM_DEV_SL_TOKEN --testStage "Unit test"
