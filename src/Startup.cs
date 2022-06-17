@@ -52,8 +52,8 @@ namespace cartservice
                 .AddOtlpExporter(opt =>
                 {
                     string protocol = Environment.GetEnvironmentVariable("OTEL_AGENT_COLLECTOR_PROTOCOL"); 
-                    string authToken = Environment.GetEnvironmentVariable("RM_DEV_SL_TOKEN"); 
-                    string endpointWithPort = $"{Environment.GetEnvironmentVariable("OTEL_EXPORTER_OTLP_TRACES_ENDPOINT")}:{Environment.GetEnvironmentVariable("OTEL_AGENT_COLLECTOR_PORT")}";
+                    string authToken = Environment.GetEnvironmentVariable("OTEL_AGENT_AUTH_TOKEN"); 
+                    string endpointWithPort = $"{Environment.GetEnvironmentVariable("OTEL_AGENT_COLLECTOR_PATH")}";
 
                     opt.Endpoint = new Uri(endpointWithPort);
                     opt.Headers = $"x-otlp-protocol={protocol},Authorization=Bearer {authToken}";                   
