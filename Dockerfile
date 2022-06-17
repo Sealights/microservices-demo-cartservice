@@ -36,7 +36,7 @@ RUN tar -xvzf sealights-dotnet-agent-3.0.1-beta.hotfix-portable.tar.gz
 RUN mv -v /cartservice/sealights-dotnet-agent-3.0.1-beta.hotfix-portable/* /cartservice/
 RUN rm sealights-dotnet-agent-3.0.1-beta.hotfix-portable.tar.gz
 
-RUN dotnet SL.DotNet.dll config --token $RM_DEV_SL_TOKEN --appName cartservice --includedAssemblies "cartservice*" --branchName main --buildName $(date +%F_%T) --includeNamespace "cartservice.*" --excludeNamespace Microsoft
+RUN dotnet SL.DotNet.dll config --token $RM_DEV_SL_TOKEN --appName cartservice --includedAssemblies "cartservice*" --branchName master --buildName $(date +%F_%T) --includeNamespace "cartservice.*" --excludeNamespace Microsoft
 RUN dotnet SL.DotNet.dll scan --buildSessionIdFile buildSessionId --binDir /app/tests/bin/Debug/net6.0 --token $RM_DEV_SL_TOKEN --ignoreGeneratedCode true
 RUN dotnet SL.DotNet.dll startExecution --buildSessionIdFile buildSessionId --token $RM_DEV_SL_TOKEN --testStage "Unit test"
 RUN dotnet SL.DotNet.dll testListener --buildSessionIdFile buildSessionId --token $RM_DEV_SL_TOKEN --workingDir /app/tests/bin/Debug/net6.0 --target dotnet --targetArgs " test cartservice.tests.dll " || true
