@@ -59,6 +59,10 @@ namespace cartservice
                     o.Protocol = OtlpExportProtocol.HttpProtobuf;
                     o.Endpoint = !string.IsNullOrEmpty(Configuration["OTEL_EXPORTER_OTLP_TRACES_ENDPOINT"]) ? new Uri(Configuration["OTEL_EXPORTER_OTLP_TRACES_ENDPOINT"]) : DecodeAndExtractServerUrl(Configuration["RM_DEV_SL_TOKEN"], Configuration["OTEL_AGENT_COLLECTOR_PORT"]);
                     o.Headers = AddHeaders(Configuration["RM_DEV_SL_TOKEN"], Configuration["OTEL_AGENT_COLLECTOR_PROTOCOL"]);
+
+                    Console.WriteLine($"OTLP endpoint: {o.Endpoint}");
+                    Console.WriteLine($"OTLP headers {o.Headers}");
+                    Console.WriteLine($"OTLP protocol {o.Protocol}");
                 }));
 
             services.AddGrpc();
