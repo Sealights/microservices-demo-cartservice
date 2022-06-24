@@ -10,6 +10,7 @@ using cartservice.services;
 using OpenTelemetry.Trace;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using OpenTelemetry.Exporter;
 
 namespace cartservice
 {
@@ -48,13 +49,14 @@ namespace cartservice
             Console.WriteLine("Initialization completed");
 
             services.AddSingleton<ICartStore>(cartStore);
-
+            
             services.AddOpenTelemetryTracing((builder) => builder
                 .AddAspNetCoreInstrumentation()
                 .AddGrpcClientInstrumentation()
                 .AddHttpClientInstrumentation()
                 .AddOtlpExporter(o =>
                 {
+                    o.Protocol = OtlpExportProtocol.HttpProtobuf;
                     o.Endpoint = !string.IsNullOrEmpty(Configuration["OTEL_EXPORTER_OTLP_TRACES_ENDPOINT"]) ? new Uri(Configuration["OTEL_EXPORTER_OTLP_TRACES_ENDPOINT"]) : DecodeAndExtractServerUrl(Configuration["RM_DEV_SL_TOKEN"], Configuration["OTEL_AGENT_COLLECTOR_PORT"]);
                     o.Headers = AddHeaders(Configuration["RM_DEV_SL_TOKEN"], Configuration["OTEL_AGENT_COLLECTOR_PROTOCOL"]);
                 }));
@@ -101,11 +103,11 @@ namespace cartservice
             {
                 throw new Exception("x-sl-server url value is empty");
             }
-
+            
             string host = apiLabAddress.Replace("https://", "");
             host = host.Replace("/api", "");
 
-            return new Uri($"ingest.{host}:{port}");
+            return new Uri($@"https://ingest.{host}:{port}");
         }
 
         private static string AddHeaders(string token, string protocol)
