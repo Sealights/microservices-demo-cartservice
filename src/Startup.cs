@@ -111,7 +111,7 @@ namespace cartservice
             string host = apiLabAddress.Replace("https://", "");
             host = host.Replace("/api", "");
 
-            return new Uri($@"https://ingest.{host}:{port}");
+            return new Uri($@"https://ingest.{host}:{port}/v1/traces");
         }
 
         private static string AddHeaders(string token, string protocol)
