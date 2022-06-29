@@ -21,6 +21,7 @@ ARG TARGET_BRANCH=""
 ARG LATEST_COMMIT=""
 ARG PR_NUMBER=""
 ARG TARGET_REPO_URL=""
+ARG BUILD_NAME=""
 
 ENV RM_DEV_SL_TOKEN ${RM_DEV_SL_TOKEN}
 ENV IS_PR ${IS_PR}
@@ -28,6 +29,7 @@ ENV TARGET_BRANCH ${TARGET_BRANCH}
 ENV LATEST_COMMIT ${LATEST_COMMIT}
 ENV PR_NUMBER ${PR_NUMBER}
 ENV TARGET_REPO_URL ${TARGET_REPO_URL}
+ENV BUILD_NAME ${BUILD_NAME}
 
 RUN echo "========================================================="
 RUN echo "targetBranch: ${TARGET_BRANCH}"
@@ -58,7 +60,7 @@ RUN rm sealights-dotnet-agent-3.0.1-beta.hotfix-portable.tar.gz
 RUN if [ $IS_PR = 0 ]; then \
     echo "Check-in to repo"; \
     dotnet SL.DotNet.dll config --token $RM_DEV_SL_TOKEN --appName cartservice --includedAssemblies "cartservice*" --branchName master \ 
-    	--buildName $(date +%F_%T) --includeNamespace "cartservice.*" --excludeNamespace Microsoft ; \
+    	--buildName $BUILD_NAME --includeNamespace "cartservice.*" --excludeNamespace Microsoft ; \
 else \ 
     echo "Pull request"; \
     dotnet SL.DotNet.dll prConfig --token $RM_DEV_SL_TOKEN --appname cartservice --includedAssemblies "cartservice*" --targetBranch "${TARGET_BRANCH}" \
