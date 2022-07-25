@@ -11,6 +11,7 @@ using OpenTelemetry.Trace;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using OpenTelemetry.Exporter;
+using cartservice.Models;
 
 namespace cartservice
 {
@@ -49,7 +50,8 @@ namespace cartservice
             Console.WriteLine("Initialization completed");
 
             services.AddSingleton<ICartStore>(cartStore);
-            
+            services.AddScoped<IMapper, Mapper>();
+
             services.AddOpenTelemetryTracing((builder) => builder
                 .AddAspNetCoreInstrumentation()
                 .AddGrpcClientInstrumentation()
@@ -66,6 +68,8 @@ namespace cartservice
                 }));
 
             services.AddGrpc();
+            services.AddControllers();
+            services.AddEndpointsApiExplorer();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -80,6 +84,7 @@ namespace cartservice
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllers();
                 endpoints.MapGrpcService<CartService>();
                 endpoints.MapGrpcService<cartservice.services.HealthCheckService>();
 
