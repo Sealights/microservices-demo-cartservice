@@ -35,12 +35,12 @@ static IHostBuilder CreateHostBuilder(string[] args) =>
         {
             webBuilder.ConfigureKestrel(options =>
             {
-                options.Listen(IPAddress.Loopback, int.Parse(Environment.GetEnvironmentVariable("PORT")), cfg =>
+                options.Listen(IPAddress.Any, int.Parse(Environment.GetEnvironmentVariable("PORT")), cfg =>
                 {
                     cfg.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http2;
                 });
 
-                options.Listen(IPAddress.Loopback, int.Parse(Environment.GetEnvironmentVariable("HTTP_PORT")), cfg =>
+                options.Listen(IPAddress.Any, int.Parse(Environment.GetEnvironmentVariable("HTTP_PORT")), cfg =>
                 {
                     cfg.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http1;
                 });
