@@ -15,12 +15,36 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using cartservice;
+using System.Net;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using System;
 
 CreateHostBuilder(args).Build().Run();
+
+//static IHostBuilder CreateHostBuilder(string[] args) =>
+//    Host.CreateDefaultBuilder(args)
+//        .ConfigureWebHostDefaults(webBuilder =>
+//        {
+//            webBuilder.UseStartup<Startup>();
+//        });
 
 static IHostBuilder CreateHostBuilder(string[] args) =>
     Host.CreateDefaultBuilder(args)
         .ConfigureWebHostDefaults(webBuilder =>
         {
+            webBuilder.ConfigureKestrel(options =>
+            {
+                options.Listen(IPAddress.Any, int.Parse(Environment.GetEnvironmentVariable("PORT")), cfg =>
+                {
+                    cfg.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http2;
+                });
+
+                options.Listen(IPAddress.Any, int.Parse(Environment.GetEnvironmentVariable("HTTP_PORT")), cfg =>
+                {
+                    cfg.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http1;
+                });
+            });
+
             webBuilder.UseStartup<Startup>();
         });
