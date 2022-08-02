@@ -2,6 +2,7 @@ using cartservice.cartstore;
 using cartservice.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace cartservice.Controllers
@@ -13,7 +14,9 @@ namespace cartservice.Controllers
         private readonly ILogger<CartController> _logger;
         private readonly ICartStore _cartStore;
         private readonly IMapper _mapper;
-        
+
+        static readonly HttpClient client = new HttpClient();
+
 
         public CartController(ILogger<CartController> logger, ICartStore cartStore, IMapper mapper)
         {
@@ -51,6 +54,23 @@ namespace cartservice.Controllers
             await _cartStore.EmptyCartAsync(cartRequest.UserId);
 
             return;
+        }
+
+        [HttpPost("DummyRequest")]
+        public async Task<string> Dummy()
+        {
+            try
+            {
+                HttpResponseMessage response = await client.GetAsync("http://sl-boutique-productcatalog:3552/listproducts");
+                response.EnsureSuccessStatusCode();
+                string responseBody = await response.Content.ReadAsStringAsync();     
+
+                return responseBody;
+            }
+            catch (HttpRequestException e)
+            {
+                return $"Message :{e.Message}";
+            }
         }
     }
 }
