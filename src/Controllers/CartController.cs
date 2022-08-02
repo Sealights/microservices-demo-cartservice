@@ -45,6 +45,8 @@ namespace cartservice.Controllers
         {
             var grpcCart = await _cartStore.GetCartAsync(cartRequest.UserId);
 
+            string response = await DummyCall();
+
             return _mapper.MapCart(grpcCart);
         }
 
@@ -56,8 +58,7 @@ namespace cartservice.Controllers
             return;
         }
 
-        [HttpPost("DummyRequest")]
-        public async Task<string> Dummy()
+        private async Task<string> DummyCall()
         {
             try
             {
