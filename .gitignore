@@ -11,3 +11,5 @@
 /.vs/cartservice/v17/.suo
 /.vs/cartservice/FileContentIndex/24683c2e-83ad-45da-80f9-61d97ef19788.vsidx
 /.vs/cartservice/FileContentIndex/write.lock
+*.vsidx
+*.v1
