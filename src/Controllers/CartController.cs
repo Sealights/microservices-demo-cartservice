@@ -45,8 +45,6 @@ namespace cartservice.Controllers
         {
             var grpcCart = await _cartStore.GetCartAsync(cartRequest.UserId);
 
-            string response = await DummyCall();
-
             return _mapper.MapCart(grpcCart);
         }
 
@@ -56,22 +54,6 @@ namespace cartservice.Controllers
             await _cartStore.EmptyCartAsync(cartRequest.UserId);
 
             return;
-        }
-
-        private async Task<string> DummyCall()
-        {
-            try
-            {
-                HttpResponseMessage response = await client.GetAsync("http://sl-boutique-productcatalog:3552/listproducts");
-                response.EnsureSuccessStatusCode();
-                string responseBody = await response.Content.ReadAsStringAsync();     
-
-                return responseBody;
-            }
-            catch (HttpRequestException e)
-            {
-                return $"Message :{e.Message}";
-            }
-        }
+        }      
     }
 }
