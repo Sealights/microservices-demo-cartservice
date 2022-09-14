@@ -53,15 +53,15 @@ RUN dotnet build
 
 WORKDIR /cartservice
 
-ADD https://sl-repo-dev.s3.us-east-1.amazonaws.com/sealights-dotnet-agent-3.0.1-beta.hotfix-portable.tar.gz sealights-dotnet-agent-3.0.1-beta.hotfix-portable.tar.gz
-RUN tar -xvzf sealights-dotnet-agent-3.0.1-beta.hotfix-portable.tar.gz
-RUN mv -v /cartservice/sealights-dotnet-agent-3.0.1-beta.hotfix-portable/* /cartservice/
-RUN rm sealights-dotnet-agent-3.0.1-beta.hotfix-portable.tar.gz
+#ADD https://sl-repo-dev.s3.us-east-1.amazonaws.com/sealights-dotnet-agent-3.0.1-beta.hotfix-portable.tar.gz sealights-dotnet-agent-3.0.1-beta.hotfix-portable.tar.gz
+#RUN tar -xvzf sealights-dotnet-agent-3.0.1-beta.hotfix-portable.tar.gz
+#RUN mv -v /cartservice/sealights-dotnet-agent-3.0.1-beta.hotfix-portable/* /cartservice/
+#RUN rm sealights-dotnet-agent-3.0.1-beta.hotfix-portable.tar.gz
 
 
-#ADD https://agents.sealights.co/dotnetcore/sealights-dotnet-agent-latest.tar.gz sealights-dotnet-agent-latest.tar.gz
-#RUN tar -xvzf sealights-dotnet-agent-latest.tar.gz
-#RUN rm sealights-dotnet-agent-latest.tar.gz
+ADD https://agents.sealights.co/dotnetcore/sealights-dotnet-agent-latest.tar.gz sealights-dotnet-agent-latest.tar.gz
+RUN tar -xvzf sealights-dotnet-agent-latest.tar.gz
+RUN rm sealights-dotnet-agent-latest.tar.gz
 
 RUN if [ $IS_PR = 0 ]; then \
     echo "Check-in to repo"; \
