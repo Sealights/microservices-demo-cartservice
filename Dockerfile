@@ -14,7 +14,8 @@
 
 # https://mcr.microsoft.com/v2/dotnet/sdk/tags/list
 #FROM mcr.microsoft.com/dotnet/sdk:6.0.201 as builder
-FROM mcr.microsoft.com/dotnet/sdk:6.0.9-alpine3.16-amd64 AS builder
+FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine AS builder
+#FROM mcr.microsoft.com/dotnet/sdk:6.0
 #FROM mcr.microsoft.com/dotnet/sdk:6.0.400-jammy-amd64 AS builder - works
 
 ARG RM_DEV_SL_TOKEN=local
