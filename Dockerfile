@@ -57,7 +57,7 @@ ADD https://agents.sealights.co/dotnetcore/sealights-dotnet-agent-latest.tar.gz 
 
 RUN tar -xvzf sealights-dotnet-agent-latest.tar.gz
 RUN rm sealights-dotnet-agent-latest.tar.gz
-RUN mv -v /cartservice/* /cartservice/
+#RUN mv -v /cartservice/* /cartservice/
 
 
 RUN if [ $IS_PR = 0 ]; then \
