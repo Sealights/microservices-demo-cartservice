@@ -56,6 +56,9 @@ RUN tar -xvzf sealights-dotnet-agent-3.0.1-beta.hotfix-portable.tar.gz
 RUN mv -v /cartservice/sealights-dotnet-agent-3.0.1-beta.hotfix-portable/* /cartservice/
 RUN rm sealights-dotnet-agent-3.0.1-beta.hotfix-portable.tar.gz
 
+ENV OTEL_AGENT_COLLECTOR_PATH=grpc://ingest.risk-management.dev.sealights.co:443
+ENV OTEL_AGENT_AUTH_TOKEN=$RM_DEV_SL_TOKEN 
+ENV OTEL_AGENT_COLLECTOR_PROTOCOL="grpc"
 
 RUN if [ $IS_PR = 0 ]; then \
     echo "Check-in to repo"; \
